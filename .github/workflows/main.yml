@@ -1,0 +1,33 @@
+name: Build EXE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: 安装 Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    
+    - name: 安装依赖
+      run: npm install
+    
+    - name: 安装 pkg
+      run: npm install -g pkg
+    
+    - name: 打包成 EXE
+      run: pkg gui-app.js --targets win-x64 --output "./dist/WhatsApp-Broadcaster-GUI.exe" --compress Brotli
+    
+    - name: 上传 EXE 文件
+      uses: actions/upload-artifact@v3
+      with:
+        name: WhatsApp-Broadcaster
+        path: dist/WhatsApp-Broadcaster-GUI.exe
